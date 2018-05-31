@@ -60,17 +60,17 @@ var DefaultConfigSavedError = errors.New("the default config has been saved, ple
 
 // DefaultConfig the default configuration to save.
 var DefaultConfig = Config{
-	Data:              Data{},
-	Discord: DiscordConfig{"TOKEN"},
+	Data:     Data{},
+	Discord:  DiscordConfig{"TOKEN"},
 	Database: DatabaseConfig{"Databaseuri"},
 }
 
 // Config the main configuration.
 type Config struct {
-	Data              `json:"-"`
-	Discord DiscordConfig `json:"discord"`
+	Data     `json:"-"`
+	Discord  DiscordConfig  `json:"discord"`
 	Database DatabaseConfig `json:"database"`
-	Redis RedisConfig `json:"redis"`
+	Redis    RedisConfig    `json:"redis"`
 }
 
 type RedisConfig struct {

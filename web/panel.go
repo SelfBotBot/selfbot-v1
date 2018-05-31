@@ -15,7 +15,7 @@ func New(config *Config) (ret *Panel, err error) {
 		engine: gin.Default(),
 	}
 
-	ret.engine.Static("/static/", config.StaticPath )
+	ret.engine.Static("/static/", config.StaticPath)
 
 	return
 }

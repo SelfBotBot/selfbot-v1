@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/SilverCory/soundboard/discord"
 	"io/ioutil"
-		"os"
+	"os"
 	"strings"
 	"time"
 )
@@ -23,8 +23,8 @@ func main() {
 
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".dca") {
-			if err := bot.LoadSound(f.Name(), f.Name()[0:len(f.Name()) - 4]); err != nil {
-				fmt.Println("Unable to load " + f.Name() + ", ", err)
+			if err := bot.LoadSound(f.Name(), f.Name()[0:len(f.Name())-4]); err != nil {
+				fmt.Println("Unable to load "+f.Name()+", ", err)
 				continue
 			}
 		}
@@ -58,15 +58,15 @@ func main() {
 			guild = args[0]
 
 			go func() {
-			voiceSesh, err := discord.NewVoice(bot.Session, args[0], args[1])
-			if err != nil {
-				fmt.Println("Unable to join voice??", err)
-				return
-			}
+				voiceSesh, err := discord.NewVoice(bot.Session, args[0], args[1])
+				if err != nil {
+					fmt.Println("Unable to join voice??", err)
+					return
+				}
 
-			bot.Sessions[args[0]] = voiceSesh
-			time.Sleep(250 * time.Millisecond)
-			go voiceSesh.StartLoop()
+				bot.Sessions[args[0]] = voiceSesh
+				time.Sleep(250 * time.Millisecond)
+				go voiceSesh.StartLoop()
 			}()
 
 			continue

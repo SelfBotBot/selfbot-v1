@@ -12,15 +12,15 @@ import (
 )
 
 type Bot struct {
-	Session *discordgo.Session
-	Sounds map[string][][]byte
+	Session  *discordgo.Session
+	Sounds   map[string][][]byte
 	Sessions map[string]*VoiceSession
 }
 
 func New(token string) (*Bot, error) {
 	ret := &Bot{
 		Sessions: make(map[string]*VoiceSession),
-		Sounds: make(map[string][][]byte),
+		Sounds:   make(map[string][][]byte),
 	}
 	var err error
 	ret.Session, err = discordgo.New("Bot " + token)
@@ -35,7 +35,7 @@ func New(token string) (*Bot, error) {
 }
 
 func (b *Bot) create(s *discordgo.Session, event *discordgo.GuildCreate) {
-	fmt.Println("GuildCreate for " + event.ID )
+	fmt.Println("GuildCreate for " + event.ID)
 }
 
 func (b *Bot) ready(s *discordgo.Session, _ *discordgo.Ready) {
@@ -71,7 +71,7 @@ func (b *Bot) botCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if strings.EqualFold(m.Content, "/sounds") {
 		msg := "Here's a list of available sounds!\n"
 		for k := range b.Sounds {
-			msg += "`/play "+ k + "`\n"
+			msg += "`/play " + k + "`\n"
 		}
 		s.ChannelMessageSend(c.ID, msg)
 		return
@@ -80,12 +80,12 @@ func (b *Bot) botCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if strings.EqualFold(m.Content, "/join") {
 		channel, err := b.FindUserInGuild(m.Author.ID, g.ID)
 		if err != nil {
-			s.ChannelMessageSend(c.ID, "Unable to find you in VC.\n```" + err.Error() + "```")
+			s.ChannelMessageSend(c.ID, "Unable to find you in VC.\n```"+err.Error()+"```")
 		}
 
 		vs, err := NewVoice(s, g.ID, channel)
 		if err != nil {
-			s.ChannelMessageSend(c.ID, "Unable to join VC.\n```" + err.Error() + "```")
+			s.ChannelMessageSend(c.ID, "Unable to join VC.\n```"+err.Error()+"```")
 			return
 		}
 
@@ -112,7 +112,7 @@ func (b *Bot) botCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if strings.HasPrefix(m.Content, "/sb") || strings.HasPrefix(m.Content, "/soundboard") {
-		s.ChannelMessageSend(c.ID, "https://sb.cory.red/panel/" + c.GuildID)
+		s.ChannelMessageSend(c.ID, "https://sb.cory.red/panel/"+c.GuildID)
 		s.ChannelMessageSend(c.ID, "We're still being made, but you can use `/join` to make me join your voice channel,\nand `/play [sound]` to play the audio file once it's in there!\nYou can also list the available sounds using `/sounds`.")
 		return
 	}
@@ -150,7 +150,7 @@ type VoiceSession struct {
 func NewVoice(s *discordgo.Session, GuildID string, ChannelID string) (*VoiceSession, error) {
 	var err error
 	ret := &VoiceSession{
-		Buffer: make([][]byte,0),
+		Buffer: make([][]byte, 0),
 	}
 
 	ret.connection, err = s.ChannelVoiceJoin(GuildID, ChannelID, false, true)
@@ -167,8 +167,8 @@ func (v *VoiceSession) StartLoop() {
 		default:
 			if len(v.Buffer) > 0 {
 				v.setSpeaking(true)
-					data, v.Buffer = v.Buffer[0], v.Buffer[1:]
-					v.connection.OpusSend <- data
+				data, v.Buffer = v.Buffer[0], v.Buffer[1:]
+				v.connection.OpusSend <- data
 			} else {
 				v.setSpeaking(false)
 			}
@@ -187,7 +187,6 @@ func (v *VoiceSession) Stop() {
 	close(v.quit)
 	v.connection.Close()
 }
-
 
 // loadSound attempts to load an encoded sound file from disk.
 func (b *Bot) LoadSound(fileName, name string) error {
