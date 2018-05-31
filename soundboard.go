@@ -8,15 +8,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SilverCory/soundboard/discord"
+	"github.com/SelfBotBot/selfbot/config"
+	"github.com/SelfBotBot/selfbot/discord"
 )
 
 func main() {
 
-	config := &Config{}
-	e(config.Load())
+	conf := &config.Config{}
+	e(conf.Load())
 
-	bot, err := discord.New(config.Discord.Token)
+	bot, err := discord.New(conf.Discord.Token)
 	e(err)
 
 	files, err := ioutil.ReadDir("./")
@@ -102,7 +103,7 @@ func main() {
 		} else if strings.HasPrefix(string(line), "load ") {
 			args := line[5:]
 			if len(args) == 0 {
-				fmt.Println("Bad args. Need \"sound [file]\"")
+				fmt.Println("Bad args. Need \"load [file]\"")
 				continue
 			}
 			sound = string(args)
