@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/SilverCory/soundboard/discord"
 	"io/ioutil"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/SilverCory/soundboard/discord"
 )
 
 func main() {
@@ -96,6 +97,19 @@ func main() {
 				continue
 			}
 			sound = string(args)
+			continue
+
+		} else if strings.HasPrefix(string(line), "load ") {
+			args := line[5:]
+			if len(args) == 0 {
+				fmt.Println("Bad args. Need \"sound [file]\"")
+				continue
+			}
+			sound = string(args)
+			if err := bot.LoadSound(string(args), string(args[0:len(args)-4])); err != nil {
+				fmt.Println("Error loading file! ", err)
+				continue
+			}
 			continue
 
 		} else {
