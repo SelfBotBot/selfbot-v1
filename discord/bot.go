@@ -4,11 +4,12 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 type Bot struct {
@@ -141,16 +142,17 @@ func (b *Bot) FindUserInGuild(UserID string, GuildID string) (ChannelID string, 
 }
 
 type VoiceSession struct {
-	connection *discordgo.VoiceConnection
-	Buffer     [][]byte
-	quit       chan struct{}
-	speaking   bool
+	connection    *discordgo.VoiceConnection
+	buffer        [][]byte
+	bufferUpdated chan struct{}
+	quit          chan struct{}
+	speaking      bool
 }
 
 func NewVoice(s *discordgo.Session, GuildID string, ChannelID string) (*VoiceSession, error) {
 	var err error
 	ret := &VoiceSession{
-		Buffer: make([][]byte, 0),
+		buffer: make([][]byte, 0),
 	}
 
 	ret.connection, err = s.ChannelVoiceJoin(GuildID, ChannelID, false, true)
@@ -165,12 +167,13 @@ func (v *VoiceSession) StartLoop() {
 		case <-v.quit:
 			return
 		default:
-			if len(v.Buffer) > 0 {
+			if len(v.buffer) > 0 {
 				v.setSpeaking(true)
-				data, v.Buffer = v.Buffer[0], v.Buffer[1:]
+				data, v.buffer = v.buffer[0], v.buffer[1:]
 				v.connection.OpusSend <- data
 			} else {
 				v.setSpeaking(false)
+				<-v.bufferUpdated
 			}
 		}
 	}
@@ -181,6 +184,15 @@ func (v *VoiceSession) setSpeaking(speaknig bool) {
 		v.connection.Speaking(speaknig)
 		v.speaking = speaknig
 	}
+}
+
+func (v *VoiceSession) SetBuffer(data [][]byte) {
+	if len(v.buffer) == 0 {
+		defer func() {
+			v.bufferUpdated <- struct{}{}
+		}()
+	}
+	v.buffer = data
 }
 
 func (v *VoiceSession) Stop() {
