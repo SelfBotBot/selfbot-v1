@@ -177,7 +177,6 @@ func (v *VoiceSession) StartLoop() {
 				v.setSpeaking(false)
 				fmt.Println(len(v.buffer))
 				<-v.bufferUpdated
-				fmt.Println("Buffer unlocked")
 			}
 		}
 	}
@@ -193,9 +192,7 @@ func (v *VoiceSession) setSpeaking(speaknig bool) {
 func (v *VoiceSession) SetBuffer(data [][]byte) {
 	isZero := len(v.buffer) == 0
 	v.buffer = data
-	fmt.Println(isZero, len(v.buffer), len(data))
 	if isZero && len(v.buffer) != 0 {
-		fmt.Println("Unlocking buffer, new length: ", len(v.buffer))
 		v.bufferUpdated <- struct{}{}
 	}
 }
@@ -210,7 +207,6 @@ func (b *Bot) LoadSound(fileName, name string) error {
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		fmt.Println("Error opening dca file :", err)
 		return err
 	}
 
