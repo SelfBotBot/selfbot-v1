@@ -175,7 +175,6 @@ func (v *VoiceSession) StartLoop() {
 				v.connection.OpusSend <- data
 			} else {
 				v.setSpeaking(false)
-				fmt.Println(len(v.buffer))
 				<-v.bufferUpdated
 			}
 		}
