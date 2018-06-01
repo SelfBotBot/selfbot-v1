@@ -116,7 +116,7 @@ func main() {
 		} else {
 			ses, ok := bot.Sessions[guild]
 			if ok {
-				ses.Buffer = bot.Sounds[sound]
+				ses.SetBuffer(bot.Sounds[sound])
 			}
 		}
 

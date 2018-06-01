@@ -107,7 +107,7 @@ func (b *Bot) botCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		ses, ok := b.Sessions[g.ID]
 		if ok {
-			ses.Buffer = sound
+			ses.SetBuffer(sound)
 		}
 		return
 	}
