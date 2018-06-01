@@ -172,3 +172,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/config.json
+.idea/inspectionProfiles/

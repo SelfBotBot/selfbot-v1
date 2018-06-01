@@ -152,7 +152,9 @@ type VoiceSession struct {
 func NewVoice(s *discordgo.Session, GuildID string, ChannelID string) (*VoiceSession, error) {
 	var err error
 	ret := &VoiceSession{
-		buffer: make([][]byte, 0),
+		buffer:        make([][]byte, 0),
+		bufferUpdated: make(chan struct{}),
+		quit:          make(chan struct{}),
 	}
 
 	ret.connection, err = s.ChannelVoiceJoin(GuildID, ChannelID, false, true)
@@ -173,7 +175,9 @@ func (v *VoiceSession) StartLoop() {
 				v.connection.OpusSend <- data
 			} else {
 				v.setSpeaking(false)
+				fmt.Println(len(v.buffer))
 				<-v.bufferUpdated
+				fmt.Println("Buffer unlocked")
 			}
 		}
 	}
@@ -187,12 +191,13 @@ func (v *VoiceSession) setSpeaking(speaknig bool) {
 }
 
 func (v *VoiceSession) SetBuffer(data [][]byte) {
-	if len(v.buffer) == 0 {
-		defer func() {
-			v.bufferUpdated <- struct{}{}
-		}()
-	}
+	isZero := len(v.buffer) == 0
 	v.buffer = data
+	fmt.Println(isZero, len(v.buffer), len(data))
+	if isZero && len(v.buffer) != 0 {
+		fmt.Println("Unlocking buffer, new length: ", len(v.buffer))
+		v.bufferUpdated <- struct{}{}
+	}
 }
 
 func (v *VoiceSession) Stop() {
