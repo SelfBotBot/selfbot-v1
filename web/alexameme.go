@@ -85,6 +85,16 @@ func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
 			} else {
 				echoResp = alexa.NewEchoResponse().OutputSpeech("I'm sorry, I couldn't find the sound " + soundName + ", try again?").EndSession(false)
 			}
+			break
+
+		case "CancelIntent":
+			echoResp = alexa.NewEchoResponse().OutputSpeech("Cya").EndSession(false)
+			break
+
+		case "StopIntent":
+			a.Web.PlaySound("402871667891765248", "oof")
+			echoResp = alexa.NewEchoResponse().OutputSpeech("I hope I stopped in time!").EndSession(false)
+			break
 
 		default:
 			echoResp = alexa.NewEchoResponse().OutputSpeech("I'm sorry, I didn't get that. Can you say that again?").EndSession(false)
