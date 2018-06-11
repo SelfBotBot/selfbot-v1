@@ -1,8 +1,6 @@
 package web
 
 import (
-	"fmt"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -56,15 +54,10 @@ func (a *AlexaMeme) RegisterHandlers() error {
 }
 
 func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Request received")
 	echoReq := alexa.GetEchoRequest(r)
-	fmt.Println(echoReq.GetRequestType(), " | ", echoReq.GetIntentName())
 
 	if echoReq.GetRequestType() == "IntentRequest" {
-		log.Println(echoReq.GetIntentName())
-
 		var echoResp *alexa.EchoResponse
-
 		switch echoReq.GetIntentName() {
 		case "play":
 
@@ -105,8 +98,6 @@ func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
 		w.Write(json)
 	} else if echoReq.GetRequestType() == "SessionEndedRequest" {
 		//session.Delete(col)
-	} else {
-		fmt.Println(echoReq.GetRequestType(), " | ", echoReq.GetIntentName())
 	}
 }
 
