@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SelfBotBot/selfbot/web"
+
 	"github.com/SelfBotBot/selfbot/config"
 	"github.com/SelfBotBot/selfbot/discord"
 )
@@ -16,6 +18,12 @@ func main() {
 
 	conf := &config.Config{}
 	e(conf.Load())
+
+	panel, err := web.New(conf)
+	e(err)
+	go func() {
+		e(panel.RunAutoTLS())
+	}()
 
 	bot, err := discord.New(conf.Discord.Token)
 	e(err)
@@ -30,6 +38,16 @@ func main() {
 				continue
 			}
 		}
+	}
+
+	panel.PlaySound = func(guildId, sound string) bool {
+		soundData, sok := bot.Sounds[sound]
+		fmt.Println("Sound found: ", sound)
+		if voiceSession, ok := bot.Sessions[guildId]; sok && ok {
+			voiceSession.SetBuffer(soundData)
+			return true
+		}
+		return false
 	}
 
 	err = bot.Session.Open()

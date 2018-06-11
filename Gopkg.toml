@@ -28,3 +28,21 @@
 [[constraint]]
   name = "github.com/gin-gonic/gin"
   version = "1.2.0"
+
+[[constraint]]
+  name = "github.com/gin-contrib/sessions"
+  branch = "master"
+  source = "github.com/SelfBotBot/sessions"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/gin-gonic/autotls"
+  version = "0.0.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/mikeflynn/go-alexa"
+  source = "github.com/danielcondemarin/go-alexa"
