@@ -15,6 +15,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/crezam/actions-on-google-golang"
+  packages = ["model"]
+  revision = "6d20299fb963258b45c29974942f75034db1bec4"
+
+[[projects]]
+  branch = "master"
   name = "github.com/dchest/uniuri"
   packages = ["."]
   revision = "8902c56451e9b58ff940bbe5fec35d5f9c04584a"
@@ -242,6 +248,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1f447714a38d801a5b2412342d166629ac185424a47d6bda886667b3900b6af4"
+  inputs-digest = "4a16c41f47ab7e54926fff9cb2927125f19021a0ea959fb3a4a2ccb20fce407b"
   solver-name = "gps-cdcl"
   solver-version = 1
