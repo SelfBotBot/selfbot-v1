@@ -3,7 +3,6 @@ package web
 import (
 	"math/rand"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -37,7 +36,7 @@ func (a *AlexaMeme) RegisterHandlers() error {
 	router := mux.NewRouter()
 	alexa.Init(map[string]interface{}{
 		"/alexamemes/echo/selfbot": alexa.EchoApplication{
-			AppID:   os.Getenv(a.Web.Config.Web.AlexaAppID),
+			AppID:   a.Web.Config.Web.AlexaAppID,
 			Handler: a.EchoSelfBot,
 		},
 	}, router)
