@@ -73,19 +73,19 @@ func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if a.Web.PlaySound != nil && a.Web.PlaySound("402871667891765248", soundName) {
-				echoResp = alexa.NewEchoResponse().OutputSpeech(getRandom(SelfbotDoneResponses)).EndSession(true)
+				echoResp = alexa.NewEchoResponse().OutputSpeech(getRandom(SelfbotDoneResponses)).EndSession(false)
 			} else {
 				echoResp = alexa.NewEchoResponse().OutputSpeech("I'm sorry, I couldn't find the sound " + soundName + ", try again?").EndSession(false)
 			}
 			break
 
 		case "CancelIntent":
-			echoResp = alexa.NewEchoResponse().OutputSpeech("Cya").EndSession(false)
+			echoResp = alexa.NewEchoResponse().OutputSpeech("Cya").EndSession(true)
 			break
 
 		case "StopIntent":
 			a.Web.PlaySound("402871667891765248", "oof")
-			echoResp = alexa.NewEchoResponse().OutputSpeech("I hope I stopped in time!").EndSession(false)
+			echoResp = alexa.NewEchoResponse().OutputSpeech("I hope I stopped in time!").EndSession(true)
 			break
 
 		default:
