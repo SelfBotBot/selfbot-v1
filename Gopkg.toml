@@ -50,3 +50,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/crezam/actions-on-google-golang"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/SilverCory/gin-redisgo-cooldowns"

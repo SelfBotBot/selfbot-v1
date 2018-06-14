@@ -5,19 +5,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-contrib/sessions/cookie"
-
-	"github.com/utrack/gin-csrf"
-
 	"github.com/SelfBotBot/selfbot/data"
-
+	"github.com/SilverCory/gin-redisgo-cooldowns"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	redstore "github.com/gin-contrib/sessions/redis"
-	"github.com/unrolled/secure"
-
-	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
+	"github.com/unrolled/secure"
+	"github.com/utrack/gin-csrf"
 )
 
 var allowedInRegisterRegex = regexp.MustCompile(`(?i)^(/(logout|register|tos|((js|css|img|auth)/*.)))|/$`)
@@ -53,6 +50,7 @@ func (panel *Panel) AddPostMiddleware() (err error) {
 	m.setupCsrf()
 	m.setupSecurity()
 	m.setupRegisterRedirect()
+	m.setupIPCooldowns()
 
 	return
 
@@ -81,7 +79,7 @@ func (m *Middleware) setupSessions() (err error) {
 		return
 	}
 
-	//TODO
+	//TODO this is here, idk why
 
 	m.web.Redis = &redis.Pool{
 		MaxIdle:     10,
@@ -113,6 +111,10 @@ func (m *Middleware) setupSessions() (err error) {
 
 	m.web.Gin.Use(sessions.Sessions("selfbot_sessions", store))
 	return nil
+}
+
+func (m *Middleware) setupIPCooldowns() {
+	m.web.Gin.Use(gin_redisgo_cooldowns.NewRateLimit(m.web.Redis, "selfbot.cooldown.general.ip:", 100, time.Second*5, nil))
 }
 
 func (m *Middleware) setupCors() {

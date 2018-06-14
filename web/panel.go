@@ -9,7 +9,7 @@ import (
 	"runtime"
 
 	"github.com/SelfBotBot/selfbot/data"
-	"github.com/SelfBotBot/sessions"
+	"github.com/gin-contrib/sessions"
 
 	"github.com/SelfBotBot/selfbot/config"
 	"github.com/garyburd/redigo/redis"
@@ -44,6 +44,9 @@ func New(config *config.Config) (ret *Panel, err error) {
 		Gin:    gin.Default(),
 		Config: config,
 	}
+
+	// Load the HTML templates
+	ret.Gin.LoadHTMLGlob(config.Web.TemplateGlob)
 
 	if err = ret.AddPreMiddleware(); err != nil {
 		return

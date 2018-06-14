@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/SilverCory/gin-redisgo-cooldowns"
+  packages = ["."]
+  revision = "317656a99e3224a203891bbb715aa3b56fe54d5c"
+
+[[projects]]
   name = "github.com/boj/redistore"
   packages = ["."]
   revision = "fc113767cd6b051980f260d6dbe84b2740c46ab0"
@@ -248,6 +254,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4a16c41f47ab7e54926fff9cb2927125f19021a0ea959fb3a4a2ccb20fce407b"
+  inputs-digest = "36164ea406347b3783db1d1de02fbde0f8ca94f14e5366ba76342b72639dec5f"
   solver-name = "gps-cdcl"
   solver-version = 1
