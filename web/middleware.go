@@ -33,7 +33,6 @@ type Middleware struct {
 var m *Middleware
 
 func (panel *Panel) AddPreMiddleware() (err error) {
-
 	m = &Middleware{panel}
 
 	if err = m.setupSessions(); err != nil {
@@ -41,11 +40,9 @@ func (panel *Panel) AddPreMiddleware() (err error) {
 	}
 
 	return
-
 }
 
 func (panel *Panel) AddPostMiddleware() (err error) {
-
 	m.setupCors()
 	m.setupCsrf()
 	m.setupSecurity()
@@ -53,7 +50,6 @@ func (panel *Panel) AddPostMiddleware() (err error) {
 	m.setupIPCooldowns()
 
 	return
-
 }
 
 func (m *Middleware) setupCsrf() {
