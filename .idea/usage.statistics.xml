@@ -4,15 +4,15 @@
     <session id="-683568322">
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="414" />
-          <entry key="html" value="679" />
+          <entry key="go" value="537" />
+          <entry key="html" value="680" />
           <entry key="json" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="414" />
-          <entry key="HTML" value="679" />
+          <entry key="Go" value="537" />
+          <entry key="HTML" value="680" />
           <entry key="JSON" value="1" />
         </counts>
       </usages-collector>

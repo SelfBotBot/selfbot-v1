@@ -191,22 +191,9 @@ func (o *Oauth) handleCallback(ctx *gin.Context) {
 }
 
 func (o *Oauth) handleRegisterGet(ctx *gin.Context) {
-	sess := sessions.Default(ctx)
-	user, ok := sess.Get("user").(data.User)
-	if !ok || user.Agreed {
-		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil { // TODO remove key
-			if to, ok := redirectTo.(string); ok {
-				ctx.Redirect(302, to)
-				ctx.Next()
-				return
-			}
-		}
-
-		ctx.Redirect(302, "/")
-		ctx.Next()
+	if o.GetUserOrRedirect(ctx).Expiry.IsZero() {
 		return
 	}
-
 	v := viewdata.Default(ctx)
 	v.Set("Title", "Registration")
 	v.HTML(200, "pages/register.html")
@@ -214,14 +201,8 @@ func (o *Oauth) handleRegisterGet(ctx *gin.Context) {
 
 func (o *Oauth) handleRegisterPost(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
-	user, ok := sess.Get("user").(data.User)
-	if !ok {
-		if redirectTo := sess.Get(SessionRedirectKey).(string); redirectTo != "" { // TODO remove key
-			ctx.Redirect(302, redirectTo)
-		} else {
-			ctx.Redirect(302, "/")
-		}
-		ctx.Next()
+	user := o.GetUserOrRedirect(ctx)
+	if user.Expiry.IsZero() {
 		return
 	}
 
@@ -255,4 +236,23 @@ func (o *Oauth) handleRegisterPost(ctx *gin.Context) {
 	ctx.Redirect(302, redirectTo)
 	ctx.Next()
 
+}
+
+func (o *Oauth) GetUserOrRedirect(ctx *gin.Context) data.User {
+	sess := sessions.Default(ctx)
+	user, ok := sess.Get("user").(data.User)
+	if !ok || user.Agreed {
+		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil { // TODO remove key
+			if to, ok := redirectTo.(string); ok {
+				ctx.Redirect(302, to)
+				ctx.Next()
+				return data.User{}
+			}
+		}
+		ctx.Redirect(302, "/")
+		ctx.Next()
+		return data.User{}
+	}
+
+	return user
 }
