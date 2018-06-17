@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SelfBotBot/selfbot/data"
+
 	"github.com/SelfBotBot/selfbot/web"
 
 	"github.com/SelfBotBot/selfbot/config"
@@ -25,6 +27,11 @@ func main() {
 
 	panel, err := web.New(conf)
 	e(err)
+
+	dbEngine, err := data.NewHandler(conf.MySQL)
+	e(err)
+	panel.Data = dbEngine
+
 	go func() {
 		if *address != "" {
 			e(panel.Gin.Run(*address))

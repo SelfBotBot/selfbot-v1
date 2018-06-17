@@ -69,6 +69,8 @@ func (o *Oauth) handleLogin(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
 	if sess.Get(SessionAuthKey) != nil {
 		ctx.Redirect(302, redirectTo)
+		ctx.Next()
+		return
 	}
 
 	provider, _ := goth.GetProvider("discord")
