@@ -21,7 +21,6 @@ type Oauth struct {
 	Web   *Panel
 	Party *gin.RouterGroup
 	Handler
-	// TODO add cooldown (per IPv4 or IPv6/64)
 }
 
 func (o *Oauth) RegisterHandlers() error {
@@ -193,19 +192,22 @@ func (o *Oauth) handleRegisterGet(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
 	user, ok := sess.Get("user").(data.User)
 	if !ok || user.Agreed {
-		if redirectTo := sess.Get(SessionRedirectKey).(string); redirectTo != "" { // TODO remove key
-			ctx.Redirect(302, redirectTo)
-		} else {
-			ctx.Redirect(302, "/")
+		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil { // TODO remove key
+			if to, ok := redirectTo.(string); ok {
+				ctx.Redirect(302, to)
+				ctx.Next()
+				return
+			}
 		}
+
+		ctx.Redirect(302, "/")
 		ctx.Next()
 		return
 	}
 
 	v := viewdata.Default(ctx)
 	v.Set("Title", "Registration")
-	v.Set("NoSearch", true)
-	v.HTML(200, "main/register.tmpl")
+	v.HTML(200, "pages/register.html")
 }
 
 func (o *Oauth) handleRegisterPost(ctx *gin.Context) {

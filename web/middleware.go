@@ -17,7 +17,7 @@ import (
 	"github.com/utrack/gin-csrf"
 )
 
-var allowedInRegisterRegex = regexp.MustCompile(`(?i)^(/(logout|register|tos|((js|css|img|auth)/*.)))|/$`)
+var allowedInRegisterRegex = regexp.MustCompile(`(?i)^(/(logout|register|tos|privacy|((js|css|img|auth)/*.)))|/$`)
 
 const CSP = `
 default-src 'self';

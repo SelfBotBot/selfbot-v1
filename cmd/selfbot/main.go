@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -16,13 +17,20 @@ import (
 
 func main() {
 
+	address := flag.String("address", "", "The address to listen on (overrides)")
+	flag.Parse()
+
 	conf := &config.Config{}
 	e(conf.Load())
 
 	panel, err := web.New(conf)
 	e(err)
 	go func() {
-		e(panel.RunAutoTLS())
+		if *address != "" {
+			e(panel.Gin.Run(*address))
+		} else {
+			e(panel.RunAutoTLS())
+		}
 	}()
 
 	bot, err := discord.New(conf.Discord.Token)

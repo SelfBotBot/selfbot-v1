@@ -2,11 +2,14 @@ package web
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/gin-contrib/static"
 
 	"github.com/SelfBotBot/selfbot/data"
 	"github.com/gin-contrib/sessions"
@@ -17,9 +20,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/acme/autocert"
 )
-
-const PrivacyPolicy = `
-<html><head><title>Privacy</title></head><body><h1>privacy policy</h1><p>We aren't currently logging any information as of yet however in the near future, your google account, amazon account and discord account informations will be stored and used for the usage of this.'`
 
 type Panel struct {
 	Gin       *gin.Engine
@@ -46,7 +46,15 @@ func New(config *config.Config) (ret *Panel, err error) {
 	}
 
 	// Load the HTML templates
+	// Templating
+	ret.Gin.SetFuncMap(template.FuncMap{
+		"comments": func(s string) template.HTML { return template.HTML(s) },
+		"ASCII":    GetAscii,
+	})
 	ret.Gin.LoadHTMLGlob(config.Web.TemplateGlob)
+
+	// Static files to load
+	ret.Gin.Use(static.Serve("/", static.LocalFile(ret.Config.Web.StaticFilePath, false)))
 
 	if err = ret.AddPreMiddleware(); err != nil {
 		return
@@ -62,9 +70,8 @@ func New(config *config.Config) (ret *Panel, err error) {
 	alexaMeme := &AlexaMeme{Web: ret}
 	alexaMeme.RegisterHandlers()
 
-	ret.Gin.GET("/privacy", func(ctx *gin.Context) {
-		ctx.String(200, PrivacyPolicy)
-	})
+	pages := &Pages{Web: ret}
+	pages.RegisterHandlers()
 
 	return
 }

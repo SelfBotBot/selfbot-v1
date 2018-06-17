@@ -1,0 +1,28 @@
+{{define "pages/index.html"}}
+{{template "parts/head.html" .}}
+<body>
+{{template "parts/navbar.html" .}}
+<div class="container">
+    <div class="bs-docs-section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="bs-component">
+                    <div class="jumbotron">
+                        <h1 class="display-3">SelfBot</h1>
+                        <p class="lead">The finest SelfBot allows you to become a DJ like Charlie Sloth!</p>
+                        <hr class="my-4">
+                        <p>Add, customise and then play your sounds with ease using this bot.</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="/login" role="button">Log in to try!</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{template "parts/footer.html" .}}
+</div>
+</body>
+{{template "parts/end.html" .}}
+{{end}}

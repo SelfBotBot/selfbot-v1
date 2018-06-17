@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/SilverCory/gin-redisgo-cooldowns"
   packages = ["."]
-  revision = "317656a99e3224a203891bbb715aa3b56fe54d5c"
+  revision = "1a267dcfeb753d55e300c4c470cd6f32664e9ed9"
 
 [[projects]]
   name = "github.com/boj/redistore"
@@ -17,7 +17,7 @@
   branch = "develop"
   name = "github.com/bwmarrin/discordgo"
   packages = ["."]
-  revision = "67729f3d95e80c3c60f97bd083d76f8244696f4d"
+  revision = "bc7403812adaeff623b713a5985bbf4235753d91"
 
 [[projects]]
   branch = "master"
@@ -62,6 +62,12 @@
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gin-contrib/static"
+  packages = ["."]
+  revision = "73da7037e716e63aa2b0ffceb630dfa7be299086"
 
 [[projects]]
   name = "github.com/gin-gonic/autotls"
@@ -194,11 +200,12 @@
   packages = [
     "acme",
     "acme/autocert",
+    "internal/subtle",
     "nacl/secretbox",
     "poly1305",
     "salsa20/salsa"
   ]
-  revision = "8ac0e0d97ce45cd83d1d7243c060cb8461dda5e9"
+  revision = "37a17fe027db43f76fd88b056ddf588563fc8722"
 
 [[projects]]
   branch = "master"
@@ -207,7 +214,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "1e491301e022f8f977054da4c2d852decd59571f"
+  revision = "db08ff08e8622530d9ed3a0e8ac279f6d4c02196"
 
 [[projects]]
   branch = "master"
@@ -222,7 +229,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "bff228c7b664c5fce602223a05fb708fd8654986"
+  revision = "56ede360ec1c541828fb88741b3f1049406d28f5"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -254,6 +261,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "36164ea406347b3783db1d1de02fbde0f8ca94f14e5366ba76342b72639dec5f"
+  inputs-digest = "8dcd2aef4aef19cd006a72abc9efc8f40af3467cf5ff6111d04ce13585e82bd5"
   solver-name = "gps-cdcl"
   solver-version = 1

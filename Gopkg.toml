@@ -54,3 +54,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/SilverCory/gin-redisgo-cooldowns"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gin-contrib/static"

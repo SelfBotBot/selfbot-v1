@@ -1,0 +1,43 @@
+{{define "parts/head.html"}}
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <title>SelfBot {{if .Title -}} | {{.Title}}{{end}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/css/bootstrap_solar/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="/css/custom.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+
+{{if .OGInfo}}
+{{comments "<!-- Generated OG content -->"}}
+{{range $property, $content := .OGInfo}}
+    <meta property="$property" content="$content">
+{{end}}
+{{else}}
+{{comments "<!-- Default OG content -->"}}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SelfBot{{if .Title}} | {{.Title}}{{end}}" />
+    {{/*<meta property="og:image" content="https://dankbotlist.com/img/icons/apple-icon-152x152.png" />*/}}
+    {{/*<meta property="og:url" content="https://dankbotlist.com/"/>*/}}
+{{end}}
+
+{{comments `<!--[if lt IE 9]>
+    <script type="application/javascript" src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--
+        The dankest self bot there is! <3
+        (Please don't tell anyone I use this, I'll get banned from Discord)
+
+        Twitter: cory_ori
+        Snapchat: gran_daddie
+        Instagram: coryr545
+        Github: SilverCory
+    `}}
+{{if .ctx}}
+    {{ASCII .ctx.ClientIP}}
+    {{end}}
+{{comments "-->"}}
+</head>
+{{end}}
