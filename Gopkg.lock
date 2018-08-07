@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/SilverCory/gin-redisgo-cooldowns"
   packages = ["."]
-  revision = "1a267dcfeb753d55e300c4c470cd6f32664e9ed9"
+  revision = "663f3740cfaf7219623756b60c1c56973b5f31d9"
 
 [[projects]]
   branch = "master"
@@ -17,28 +17,19 @@
   branch = "develop"
   name = "github.com/bwmarrin/discordgo"
   packages = ["."]
-  revision = "bc7403812adaeff623b713a5985bbf4235753d91"
+  revision = "1593c55523958ab2f7c0473931915efa638718a0"
 
 [[projects]]
   branch = "master"
   name = "github.com/crezam/actions-on-google-golang"
   packages = ["model"]
-  revision = "6d20299fb963258b45c29974942f75034db1bec4"
+  revision = "20ba8c6fbb5c5c1de2acfff39264bcafb96f37f9"
 
 [[projects]]
   branch = "master"
   name = "github.com/dchest/uniuri"
   packages = ["."]
   revision = "8902c56451e9b58ff940bbe5fec35d5f9c04584a"
-
-[[projects]]
-  name = "github.com/garyburd/redigo"
-  packages = [
-    "internal",
-    "redis"
-  ]
-  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
-  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/gin-contrib/cors"
@@ -54,8 +45,7 @@
     "cookie",
     "redis"
   ]
-  revision = "73f1fda8868c01262f578e6d10a2251498dd5c37"
-  source = "github.com/SelfBotBot/sessions"
+  revision = "854e10e72056b122034a60b0fa207b8f29ae3d07"
 
 [[projects]]
   branch = "master"
@@ -151,8 +141,8 @@
     ".",
     "providers/discord"
   ]
-  revision = "aefb600c0c37063c4280d47c42b11984b63cece4"
-  version = "v1.45.7"
+  revision = "5fad70a91bce59cc5ff8a84c01e1da5f49f31e6b"
+  version = "v1.45.9"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
@@ -183,7 +173,7 @@
   branch = "master"
   name = "github.com/unrolled/secure"
   packages = ["."]
-  revision = "a1cf62cc2159fff407728f118c41aece76c397fa"
+  revision = "8287f3899c8e3d490748e18fe7d438629132914e"
 
 [[projects]]
   name = "github.com/urfave/negroni"
@@ -208,7 +198,7 @@
     "poly1305",
     "salsa20/salsa"
   ]
-  revision = "37a17fe027db43f76fd88b056ddf588563fc8722"
+  revision = "f027049dab0ad238e394a753dba2d14753473a04"
 
 [[projects]]
   branch = "master"
@@ -217,7 +207,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "db08ff08e8622530d9ed3a0e8ac279f6d4c02196"
+  revision = "19491d39cadbd9cd33f26ca22cc89ba4ba38251c"
 
 [[projects]]
   branch = "master"
@@ -226,13 +216,13 @@
     ".",
     "internal"
   ]
-  revision = "1e0a3fa8ba9a5c9eb35c271780101fdaf1b205d7"
+  revision = "3d292e4d0cdc3a0113e6d207bb137145ef1de42f"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "56ede360ec1c541828fb88741b3f1049406d28f5"
+  revision = "acbc56fc7007d2a01796d5bde54f39e3b3e95945"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -246,8 +236,8 @@
     "internal/urlfetch",
     "urlfetch"
   ]
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
+  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
+  version = "v1.1.0"
 
 [[projects]]
   name = "gopkg.in/go-playground/validator.v8"
@@ -264,6 +254,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3b3922d025937f937c85f56e542e9bb1cfa94c1dc7d3d50617ce3670bf47b778"
+  inputs-digest = "bcf4a27508498f29db4bb7a08abfc0dafb67e625cd897fc06fdec380a307da0e"
   solver-name = "gps-cdcl"
   solver-version = 1

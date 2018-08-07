@@ -32,7 +32,6 @@
 [[constraint]]
   name = "github.com/gin-contrib/sessions"
   branch = "master"
-  source = "github.com/SelfBotBot/sessions"
 
 [[constraint]]
   name = "github.com/satori/go.uuid"
