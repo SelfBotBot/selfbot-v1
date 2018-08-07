@@ -39,10 +39,6 @@
   branch = "master"
 
 [[constraint]]
-  name = "github.com/gin-gonic/autotls"
-  version = "0.0.1"
-
-[[constraint]]
   branch = "master"
   name = "github.com/mikeflynn/go-alexa"
   source = "github.com/danielcondemarin/go-alexa"
@@ -58,3 +54,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/gin-contrib/static"
+
+[[override]]
+  name = "github.com/boj/redistore"
+  branch = "master"

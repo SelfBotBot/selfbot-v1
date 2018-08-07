@@ -1,6 +1,7 @@
 package web
 
 import (
+	"crypto/tls"
 	"fmt"
 	"html/template"
 	"log"
@@ -15,9 +16,8 @@ import (
 	"github.com/gin-contrib/sessions"
 
 	"github.com/SelfBotBot/selfbot/config"
-	"github.com/garyburd/redigo/redis"
-	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -88,8 +88,18 @@ func (panel *Panel) RunAutoTLS() error {
 	} else {
 		m.Cache = autocert.DirCache(dir)
 	}
-	go http.ListenAndServe(":http", m.HTTPHandler(nil))
-	return autotls.RunWithManager(panel.Gin, *m)
+	go http.ListenAndServe(panel.Config.Web.ListenAddress+":80", m.HTTPHandler(nil))
+	return runWithManager(panel.Gin, *m, panel.Config.Web.ListenAddress)
+}
+
+func runWithManager(r http.Handler, m autocert.Manager, address string) error {
+	s := &http.Server{
+		Addr:      address + ":443",
+		TLSConfig: &tls.Config{GetCertificate: m.GetCertificate},
+		Handler:   r,
+	}
+
+	return s.ListenAndServeTLS("", "")
 }
 
 func SaveSession(sesh sessions.Session, ctx *gin.Context) error {

@@ -8,10 +8,10 @@
   revision = "1a267dcfeb753d55e300c4c470cd6f32664e9ed9"
 
 [[projects]]
+  branch = "master"
   name = "github.com/boj/redistore"
   packages = ["."]
-  revision = "fc113767cd6b051980f260d6dbe84b2740c46ab0"
-  version = "v1.2"
+  revision = "82b86d293eb292dd6949fadc09388c47f095dc54"
 
 [[projects]]
   branch = "develop"
@@ -70,12 +70,6 @@
   revision = "73da7037e716e63aa2b0ffceb630dfa7be299086"
 
 [[projects]]
-  name = "github.com/gin-gonic/autotls"
-  packages = ["."]
-  revision = "5b3297bdcee778ff3bbdc99ab7c41e1c2677d22d"
-  version = "0.0.1"
-
-[[projects]]
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
@@ -96,6 +90,15 @@
   packages = ["proto"]
   revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
   version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/gomodule/redigo"
+  packages = [
+    "internal",
+    "redis"
+  ]
+  revision = "9c11da706d9b7902c6da69c592f75637793fe121"
+  version = "v2.0.0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -261,6 +264,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8dcd2aef4aef19cd006a72abc9efc8f40af3467cf5ff6111d04ce13585e82bd5"
+  inputs-digest = "3b3922d025937f937c85f56e542e9bb1cfa94c1dc7d3d50617ce3670bf47b778"
   solver-name = "gps-cdcl"
   solver-version = 1

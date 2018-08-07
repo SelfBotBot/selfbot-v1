@@ -7,12 +7,12 @@ import (
 
 	"github.com/SelfBotBot/selfbot/data"
 	"github.com/SilverCory/gin-redisgo-cooldowns"
-	"github.com/garyburd/redigo/redis"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	redstore "github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 	"github.com/unrolled/secure"
 	"github.com/utrack/gin-csrf"
 )

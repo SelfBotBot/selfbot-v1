@@ -134,7 +134,7 @@ var DefaultConfig = Config{
 	},
 	Web: Web{
 		StaticFilePath:   "static/",
-		ListenAddress:    ":8080",
+		ListenAddress:    "",
 		LogAuthKey:       "memememememem",
 		TemplateGlob:     "templates/**/*.tmpl",
 		CSRFSecret:       uuid.Must(uuid.NewV4()).String() + "-ChangePls",
