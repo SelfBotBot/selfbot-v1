@@ -28,17 +28,10 @@ func New(token string) (*Bot, error) {
 	var err error
 	ret.Session, err = discordgo.New("Bot " + token)
 
-	//ret.Session.LogLevel = 3
-
 	ret.Session.AddHandler(ret.botCommand)
-	ret.Session.AddHandler(ret.create)
 	ret.Session.AddHandler(ret.ready)
 
 	return ret, err
-}
-
-func (b *Bot) create(s *discordgo.Session, event *discordgo.GuildCreate) {
-	fmt.Println("GuildCreate for " + event.ID)
 }
 
 func (b *Bot) ready(s *discordgo.Session, _ *discordgo.Ready) {

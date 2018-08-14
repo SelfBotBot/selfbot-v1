@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -41,9 +42,21 @@ type Handler interface {
 
 func New(config *config.Config) (ret *Panel, err error) {
 	ret = &Panel{
-		Gin:    gin.Default(),
+		Gin:    gin.New(),
 		Config: config,
 	}
+
+	f, err := os.Create("/var/log/selfbot/gin.log")
+	if err != nil {
+		return ret, err
+	}
+
+	errF, err := os.Create("/var/log/selfbot/gin_err.log")
+	if err != nil {
+		return ret, err
+	}
+	ret.Gin.Use(gin.LoggerWithWriter(io.MultiWriter(f)))
+	ret.Gin.Use(gin.RecoveryWithWriter(io.MultiWriter(errF, os.Stderr)))
 
 	// Load the HTML templates
 	// Templating
