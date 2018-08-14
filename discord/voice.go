@@ -55,7 +55,9 @@ func (v *VoiceSession) StartLoop() {
 
 func (v *VoiceSession) setSpeaking(speaknig bool) {
 	if speaknig != v.speaking {
-		v.connection.Speaking(speaknig)
+		if err := v.connection.Speaking(speaknig); err != nil {
+			v.Stop()
+		}
 		v.speaking = speaknig
 	}
 }
