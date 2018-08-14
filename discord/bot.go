@@ -13,15 +13,17 @@ import (
 )
 
 type Bot struct {
-	Session  *discordgo.Session
-	Sounds   map[string][][]byte
-	Sessions map[string]*VoiceSession
+	Session    *discordgo.Session
+	Sounds     map[string][][]byte
+	Sessions   map[string]*VoiceSession
+	infoModule *InfoModule
 }
 
 func New(token string) (*Bot, error) {
 	ret := &Bot{
-		Sessions: make(map[string]*VoiceSession),
-		Sounds:   make(map[string][][]byte),
+		Sessions:   make(map[string]*VoiceSession),
+		Sounds:     make(map[string][][]byte),
+		infoModule: &InfoModule{},
 	}
 	var err error
 	ret.Session, err = discordgo.New("Bot " + token)
@@ -110,6 +112,25 @@ func (b *Bot) botCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 			ses.SetBuffer(sound)
 		}
 		return
+	}
+
+	if strings.HasPrefix(m.Content, "/info") {
+		if len(m.Content) <= 5 {
+			b.infoModule.allStatsCommand(s, m)
+			return
+		} else {
+			startsWith := strings.TrimSpace(m.Content[6:])
+			if strings.HasPrefix(startsWith, "h") {
+				b.infoModule.hostStatsCommand(s, m)
+			} else if strings.HasPrefix(startsWith, "b") {
+				b.infoModule.botStatsCommand(s, m)
+			} else if strings.HasPrefix(startsWith, "a") {
+				b.infoModule.allStatsCommand(s, m)
+			} else {
+				s.ChannelMessageSend(c.ID, "Hey, you need to /stats [all|bot|host]")
+			}
+			return
+		}
 	}
 
 	if strings.HasPrefix(m.Content, "/sb") || strings.HasPrefix(m.Content, "/soundboard") {
