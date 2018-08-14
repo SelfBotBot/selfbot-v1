@@ -118,6 +118,7 @@ func (b *Bot) Close() error {
 	b.stopping = true
 	for _, v := range b.Sessions {
 		v.buffer = goodbye
+		v.bufferUpdated <- struct{}{}
 	}
 	time.Sleep(1 * time.Second)
 	for _, v := range b.Sessions {
