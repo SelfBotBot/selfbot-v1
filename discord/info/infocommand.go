@@ -1,4 +1,4 @@
-package discord
+package info
 
 import (
 	"fmt"
@@ -51,7 +51,7 @@ const (
 
 type InfoModule struct{}
 
-func (p *InfoModule) allStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (p *InfoModule) AllStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	p.React(s, m, "⏳")
 	embedBad := p.buildEmbed(p.populateMemStats(), true)
 	embedBad.Author = &discordgo.MessageEmbedAuthor{
@@ -67,7 +67,7 @@ func (p *InfoModule) allStatsCommand(s *discordgo.Session, m *discordgo.MessageC
 	p.React(s, m, "✅")
 }
 
-func (p *InfoModule) botStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (p *InfoModule) BotStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	p.React(s, m, "⏳")
 	embedBad := p.buildEmbed(p.populateMemStats(), false)
 	embedBad.Author = &discordgo.MessageEmbedAuthor{
@@ -83,7 +83,7 @@ func (p *InfoModule) botStatsCommand(s *discordgo.Session, m *discordgo.MessageC
 	p.React(s, m, "✅")
 }
 
-func (p *InfoModule) hostStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (p *InfoModule) HostStatsCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 	p.React(s, m, "⏳")
 	embedBad := p.buildEmbed(nil, true)
 	embedBad.Author = &discordgo.MessageEmbedAuthor{
