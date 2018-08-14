@@ -73,14 +73,9 @@ func main() {
 	fmt.Println("Done..")
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
-	go func() {
-		for range c {
-			if err := bot.Close(); err != nil {
-				panic(err)
-			}
-			os.Exit(0)
-		}
-	}()
+	<-c
+	e(bot.Close())
+	os.Exit(0)
 
 	//reader := bufio.NewReader(os.Stdin)
 	//var guild string
