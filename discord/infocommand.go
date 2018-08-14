@@ -233,7 +233,7 @@ func (p *InfoModule) buildEmbed(memStats *runtime.MemStats, system bool) *discor
 		}
 
 		// Separator field
-		//fields = append(fields, SeperatorField())
+		fields = append(fields, SeperatorField())
 
 		hostInfo, err := host.Info()
 		if err == nil {
