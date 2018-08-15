@@ -42,20 +42,20 @@ func (w *MessageWriter) Write(p []byte) (n int, err error) {
 			w.sendMessage()
 		}
 
-		w.Size = len(v) + w.Size + 1 // TODO reevaluate and understand this..
-		if k+1 == len(lines) {
-			if p[len(p)-1] != '\n' {
-				w.Messages = append(w.Messages, v)
-				w.Size = len(v) - 1
-				continue
-			}
-		}
-
-		w.Messages = append(w.Messages, v)
+		w.Size += len(v)
+		w.Messages = append(w.Messages, v+"\n")
 	}
 
 	return len(p), nil
 
+}
+
+func (w *MessageWriter) WriteString(s string) (n int, err error) {
+	return w.Write([]byte(s))
+}
+
+func (w *MessageWriter) WriteLine(s string) (n int, err error) {
+	return w.Write([]byte(s + "\n"))
 }
 
 func (w *MessageWriter) Close() error {
@@ -71,7 +71,7 @@ func (w *MessageWriter) sendMessage() {
 		return
 	}
 
-	msg := strings.Join(w.Messages, "\n")
+	msg := strings.Join(w.Messages, "")
 	if msg == "" {
 		return
 	}
