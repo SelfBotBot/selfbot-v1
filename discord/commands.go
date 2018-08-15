@@ -77,6 +77,7 @@ func (b *Bot) playCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 	if ok {
 		ses.SetBuffer(sound)
 	}
+	go s.ChannelMessageDelete(c.ID, m.ID) // Delete /play message to reduce spam
 	return
 }
 
