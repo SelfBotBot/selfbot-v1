@@ -2,6 +2,7 @@ package discord
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -74,7 +75,22 @@ func (v *VoiceSession) SetBuffer(data [][]byte) {
 }
 
 func (v *VoiceSession) Stop() {
-	close(v.quit)
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Error recovered in VoiceSession.Stop() for "+v.connection.GuildID, r)
+		}
+		v.connection.Close()
+	}()
+
+	// Remove voice session from bot and stop the loop.
 	delete(v.bot.Sessions, v.connection.GuildID)
-	v.connection.Close()
+	close(v.quit)
+
+	// Broadcast "Goodbye".
+	v.setSpeaking(true)
+	for _, data := range goodbye {
+		v.connection.OpusSend <- data
+	}
+	v.setSpeaking(false)
 }

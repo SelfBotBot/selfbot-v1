@@ -117,12 +117,7 @@ func LoadSound(fileName string) ([][]byte, error) {
 func (b *Bot) Close() error {
 	b.stopping = true
 	for _, v := range b.Sessions {
-		go func() {
-			v.buffer = goodbye
-			v.bufferUpdated <- struct{}{}
-			time.Sleep(550 * time.Millisecond)
-			v.Stop()
-		}()
+		go v.Stop()
 		time.Sleep(75 * time.Millisecond)
 	}
 	time.Sleep(2 * time.Second)
