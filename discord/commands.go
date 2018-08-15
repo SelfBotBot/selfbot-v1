@@ -94,9 +94,9 @@ func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c 
 	writer := discordio.NewMessageWriter(s, m)
 	writer.CodeBlock = false
 
-	writer.Write([]byte("Here's a list of available sounds!\n"))
+	writer.Write([]byte("Here's a list of available sounds!"))
 	for _, v := range keys {
-		writer.Write([]byte("`/play " + v + "`\n"))
+		writer.Write([]byte("`/play " + v + "`"))
 	}
 
 	writer.Close()
