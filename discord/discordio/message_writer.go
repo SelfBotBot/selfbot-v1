@@ -42,7 +42,7 @@ func (w *MessageWriter) Write(p []byte) (n int, err error) {
 			w.sendMessage()
 		}
 
-		w.Size = len(v) + w.Size + 1
+		w.Size = len(v) + w.Size + 1 // TODO reevaluate and understand this..
 		if k+1 == len(lines) {
 			if p[len(p)-1] != '\n' {
 				w.Messages = append(w.Messages, v)
