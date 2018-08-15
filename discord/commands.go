@@ -4,6 +4,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/SelfBotBot/selfbot/discord/discordio"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -82,7 +83,6 @@ func (b *Bot) playCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 }
 
 func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *discordgo.Channel, g *discordgo.Guild) {
-	msg := "Here's a list of available sounds!\n"
 
 	// TODO make this way better, sorting this every time is ew.
 	keys := make([]string, 0, len(b.Sounds))
@@ -91,10 +91,15 @@ func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c 
 	}
 	sort.Strings(keys)
 
+	writer := discordio.NewMessageWriter(s, m)
+	writer.CodeBlock = false
+
+	writer.Write([]byte("Here's a list of available sounds!"))
 	for _, v := range keys {
-		msg += "`/play " + v + "`\n"
+		writer.Write([]byte("`/play " + v))
 	}
-	s.ChannelMessageSend(c.ID, msg)
+
+	writer.Close()
 }
 
 func (b *Bot) infoCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *discordgo.Channel, g *discordgo.Guild) {
