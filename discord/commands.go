@@ -96,7 +96,7 @@ func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c 
 
 	writer.Write([]byte("Here's a list of available sounds!"))
 	for _, v := range keys {
-		writer.Write([]byte("`/play " + v))
+		writer.Write([]byte("`/play " + v + "`"))
 	}
 
 	writer.Close()
