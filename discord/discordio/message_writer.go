@@ -37,7 +37,7 @@ func (w *MessageWriter) Write(p []byte) (n int, err error) {
 
 	input := string(p[:])
 	lines := strings.Split(removeShittyReturns(input), "\n")
-	for k, v := range lines {
+	for _, v := range lines {
 		if len(v)+w.Size+1 >= 1990 {
 			w.sendMessage()
 		}
