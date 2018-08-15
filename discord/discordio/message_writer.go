@@ -51,7 +51,7 @@ func (w *MessageWriter) Write(p []byte) (n int, err error) {
 			}
 		}
 
-		w.Messages = append(w.Messages, v+"\n")
+		w.Messages = append(w.Messages, v)
 	}
 
 	return len(p), nil
