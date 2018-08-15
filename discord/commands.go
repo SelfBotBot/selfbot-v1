@@ -82,8 +82,15 @@ func (b *Bot) playCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 
 func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *discordgo.Channel, g *discordgo.Guild) {
 	msg := "Here's a list of available sounds!\n"
+
+	// TODO make this way better, sorting this every time is ew.
+	keys := make([]string, 0, len(b.Sounds))
 	for k := range b.Sounds {
-		msg += "`/play " + k + "`\n"
+		keys = append(keys, k)
+	}
+
+	for _, v := range keys {
+		msg += "`/play " + v + "`\n"
 	}
 	s.ChannelMessageSend(c.ID, msg)
 }
