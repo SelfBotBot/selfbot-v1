@@ -38,6 +38,17 @@ func NewVoice(s *discordgo.Session, bot *Bot, GuildID string, ChannelID string) 
 
 func (v *VoiceSession) StartLoop() {
 	var data []byte
+
+	tryReady := 0
+	for !v.connection.Ready {
+		time.Sleep(1 * time.Second)
+		tryReady++
+		if tryReady > 30 {
+			v.Stop()
+			return
+		}
+	}
+
 	for {
 		select {
 		case <-v.quit:
@@ -92,10 +103,12 @@ func (v *VoiceSession) Stop() {
 	delete(v.bot.Sessions, v.connection.GuildID)
 	close(v.quit)
 
-	// Broadcast "Goodbye".
-	v.setSpeaking(true)
-	for _, data := range goodbye {
-		v.connection.OpusSend <- data
+	if v.connection.Ready {
+		// Broadcast "Goodbye".
+		v.setSpeaking(true)
+		for _, data := range goodbye {
+			v.connection.OpusSend <- data
+		}
+		v.setSpeaking(false)
 	}
-	v.setSpeaking(false)
 }

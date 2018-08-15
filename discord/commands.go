@@ -49,6 +49,7 @@ func (b *Bot) joinCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 	vs, err := NewVoice(s, b, g.ID, channel)
 	if err != nil {
 		s.ChannelMessageSend(c.ID, "Unable to join VC.\n```"+err.Error()+"```")
+		vs.Stop() // Call this incase we're still alive?
 		return
 	}
 
