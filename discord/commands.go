@@ -52,9 +52,9 @@ func (b *Bot) joinCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 		return
 	}
 
-	vs.SetBuffer(welcome)
 	go vs.StartLoop()
 	b.Sessions[g.ID] = vs
+	go vs.SetBuffer(welcome)
 	return
 }
 
