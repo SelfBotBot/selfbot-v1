@@ -71,7 +71,7 @@ func (w *MessageWriter) sendMessage() {
 		return
 	}
 
-	msg := strings.Join(w.Messages, "")
+	msg := strings.Join(w.Messages, "\n")
 	if msg == "" {
 		return
 	}
