@@ -29,7 +29,7 @@ func New(token string) (*Bot, error) {
 	var err error
 	ret.Session, err = discordgo.New("Bot " + token)
 
-	ret.Session.AddHandler(ret.botCommand)
+	ret.Session.AddHandler(ret.botCommandListener)
 	ret.Session.AddHandler(ret.ready)
 
 	return ret, err
