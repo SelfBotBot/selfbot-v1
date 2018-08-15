@@ -3,6 +3,7 @@ package discord
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -80,6 +81,8 @@ func (v *VoiceSession) Stop() {
 		if r := recover(); r != nil {
 			fmt.Println("Error recovered in VoiceSession.Stop() for "+v.connection.GuildID, r)
 		}
+		v.connection.Disconnect()
+		time.Sleep(50 * time.Millisecond)
 		v.connection.Close()
 	}()
 
