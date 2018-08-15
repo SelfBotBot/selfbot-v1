@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	data, err := discord.LoadSound("goodbye.dca")
+	data, err := discord.LoadSound("welcome.dca")
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,6 @@ package discord
 
 import (
 	"strings"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -53,10 +52,9 @@ func (b *Bot) joinCommand(s *discordgo.Session, m *discordgo.MessageCreate, c *d
 		return
 	}
 
-	b.Sessions[g.ID] = vs
-	time.Sleep(250 * time.Millisecond) // FIXME Why is this delay here and so long?
-
+	vs.SetBuffer(welcome)
 	go vs.StartLoop()
+	b.Sessions[g.ID] = vs
 	return
 }
 

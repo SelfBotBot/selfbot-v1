@@ -81,7 +81,9 @@ func (v *VoiceSession) Stop() {
 		if r := recover(); r != nil {
 			fmt.Println("Error recovered in VoiceSession.Stop() for "+v.connection.GuildID, r)
 		}
-		v.connection.Disconnect()
+		if err := v.connection.Disconnect(); err != nil {
+			fmt.Println("Unable to disconnect?!", err)
+		}
 		time.Sleep(50 * time.Millisecond)
 		v.connection.Close()
 	}()
