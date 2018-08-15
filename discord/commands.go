@@ -1,6 +1,7 @@
 package discord
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -88,6 +89,7 @@ func (b *Bot) soundsCommand(s *discordgo.Session, m *discordgo.MessageCreate, c 
 	for k := range b.Sounds {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 
 	for _, v := range keys {
 		msg += "`/play " + v + "`\n"
