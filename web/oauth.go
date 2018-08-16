@@ -3,12 +3,12 @@ package web
 import (
 	"errors"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/SelfBotBot/selfbot/data"
 
 	"fmt"
-
-	"os"
 
 	"github.com/SelfBotBot/selfbot/web/viewdata"
 	"github.com/gin-contrib/sessions"
@@ -23,12 +23,20 @@ type Oauth struct {
 	Handler
 }
 
+var discordProvider goth.Provider
+
 func (o *Oauth) RegisterHandlers() error {
 
 	discordConf := o.Web.Config.DiscordOAuth
 	goth.UseProviders(
 		discord.New(discordConf.Key, discordConf.Secret, discordConf.Callback+"/auth/discord/callback", discord.ScopeEmail, discord.ScopeIdentify, discord.ScopeGuilds, discord.ScopeJoinGuild),
 	)
+
+	if prov, err := goth.GetProvider("discord"); err != nil {
+		panic(err)
+	} else {
+		discordProvider = prov
+	}
 
 	o.Web.Gin.GET("/login", o.handleLogin)
 	o.Web.Gin.GET("/logout", o.handleLogout)
@@ -62,19 +70,40 @@ func (o *Oauth) handleIndex(ctx *gin.Context) {
 func (o *Oauth) handleLogin(ctx *gin.Context) {
 
 	redirectTo := ctx.Param("redirectTo")
-	if redirectTo == "" {
+	if redirectTo == "" || !strings.HasPrefix(redirectTo, "/") {
 		redirectTo = "/"
 	}
 
 	sess := sessions.Default(ctx)
-	if sess.Get(SessionAuthKey) != nil {
+	if sess.Get(SessionAuthKey) != nil && sess.Get("user") != nil {
+
+		u, err := getAuthUserFromSession(ctx)
+		if err == nil && o.refreshToken(u) == nil {
+			user, ok := o.GetUser(ctx)
+			if !ok {
+				ctx.Error(errors.New("man something bad happened here"))
+				return
+			}
+
+			user.Name = u.Name
+			user.Discriminator = u.RawData["discriminator"].(string)
+			user.SessionToken = u.AccessToken
+			user.SessionTokenSecret = u.AccessTokenSecret
+			user.RefreshToken = u.RefreshToken
+			user.Expiry = u.ExpiresAt
+
+			if err := o.SaveUser(ctx, &user); err != nil {
+				ctx.Error(err)
+				return
+			}
+		}
+
 		ctx.Redirect(302, redirectTo)
 		ctx.Next()
 		return
 	}
 
-	provider, _ := goth.GetProvider("discord")
-	oauthSess, err := provider.BeginAuth(ctx.Param("state"))
+	oauthSess, err := discordProvider.BeginAuth(ctx.Param("state"))
 	if err != nil {
 		ctx.Abort()
 		return
@@ -102,88 +131,52 @@ func (o *Oauth) handleLogin(ctx *gin.Context) {
 
 func (o *Oauth) handleCallback(ctx *gin.Context) {
 
-	provider, err := goth.GetProvider("discord")
-	if err != nil {
-		ctx.Abort()
-		return
-		// TODO proper error handling.
-	}
-
 	sess := sessions.Default(ctx)
-	if sess.Get(SessionAuthKey) == nil {
-		ctx.Error(errors.New("completeUserAuth error: could not find a matching session for this request"))
-		return
-		// TODO proper error handling.
-	}
-
-	oauthSess, err := provider.UnmarshalSession(sess.Get(SessionAuthKey).(string))
+	oauthSess, err := getAuthSessionFromSession(ctx)
 	if err != nil {
-		ctx.Error(fmt.Errorf("completeUserAuth error: could not unmarshal session data. Error: %#v", err))
+		ctx.Error(fmt.Errorf("completeUserAuth error: invalid session! Error: %#v", err))
 		return
 		// TODO proper error handling.
 	}
 
-	_, err = oauthSess.Authorize(provider, ctx.Request.URL.Query())
+	_, err = oauthSess.Authorize(discordProvider, ctx.Request.URL.Query())
 	if err != nil {
 		ctx.Error(fmt.Errorf("completeUserAuth error: bad auth! Error: %#v", err))
 		return
 		// TODO proper error handling.
 	}
 
-	u, err := provider.FetchUser(oauthSess)
-
-	userId, err := strconv.ParseUint(u.UserID, 10, 64)
+	u, err := discordProvider.FetchUser(oauthSess)
 	if err != nil {
-		ctx.Abort()
-		ctx.Error(fmt.Errorf("completeuserAuth! Error: %#v", err))
+		ctx.Error(fmt.Errorf("completeUserAuth error: bad user! Error: %#v", err))
+		return
+		// TODO proper error handling.
 	}
 
-	// Query data
-	user := &data.User{
-		ID:    userId,
-		Email: u.Email,
+	user, err := o.CreateOrGetUser(ctx, u)
+	if err != nil {
+		ctx.Error(fmt.Errorf("completeUserAuth error: db write/read went bad! Error: %#v", err))
+		return
 	}
 
-	if _, bol := os.LookupEnv("OAUTHTEST"); bol {
-		fmt.Printf("%#v\n", u)
-	}
-
-	// engine create.
-	engine := o.Web.Data.Engine
-	engine.Where(user).First(user)
-
-	user.Name = u.Name
-	user.Discriminator = u.RawData["discriminator"].(string)
-	user.SessionToken = u.AccessToken
-	user.SessionTokenSecret = u.AccessTokenSecret
-	user.RefreshToken = u.AccessToken
-	user.Expiry = u.ExpiresAt
-
-	if user.CreatedAt.IsZero() {
-		fmt.Println("Create")
-		engine.Create(user)
+	// Redirect to the appropriate place.
+	redirectTo := sess.Get(SessionRedirectKey).(string)
+	if !user.Agreed {
+		redirectTo = "/register"
 	} else {
-		fmt.Println("Save")
-		engine.Save(user)
+		if redirectTo == "" {
+			redirectTo = "/"
+		}
+		sess.Delete(SessionRedirectKey)
 	}
 
 	// User authenticated.
 	sess.Set("user", *user)
 	if err := SaveSession(sess, ctx); err != nil {
-		ctx.Error(err)
+		ctx.Error(fmt.Errorf("completeUserAuth error: session write/read went bad! Error: %#v", err))
 		return
 	}
 	fmt.Printf("User authenticate via discord! %q %s#%s", u.UserID, u.Name, u.RawData["discriminator"])
-
-	// Redirect to the appropriate place.
-	redirectTo := sess.Get(SessionRedirectKey).(string)
-	if redirectTo == "" {
-		redirectTo = "/"
-	}
-
-	if !user.Agreed {
-		redirectTo = "/register"
-	}
 
 	ctx.Redirect(302, redirectTo)
 	ctx.Next()
@@ -238,21 +231,111 @@ func (o *Oauth) handleRegisterPost(ctx *gin.Context) {
 
 }
 
-func (o *Oauth) GetUserOrRedirect(ctx *gin.Context) data.User {
+func (o *Oauth) SaveUser(ctx *gin.Context, user *data.User) error {
+
+	if err := o.Web.Data.Engine.Save(&user).Error; err != nil {
+		return err
+	}
+
+	sess := sessions.Default(ctx)
+	sess.Set("user", user)
+	if err := SaveSession(sess, ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *Oauth) GetUser(ctx *gin.Context) (data.User, bool) {
 	sess := sessions.Default(ctx)
 	user, ok := sess.Get("user").(data.User)
+	return user, ok
+}
+
+func (o *Oauth) GetUserOrRedirect(ctx *gin.Context) data.User {
+	sess := sessions.Default(ctx)
+	user, ok := o.GetUser(ctx)
 	if !ok || user.Agreed {
-		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil { // TODO remove key
-			if to, ok := redirectTo.(string); ok {
+		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil {
+			sess.Delete(SessionRedirectKey)
+			if err := SaveSession(sess, ctx); err != nil {
+				ctx.Error(err)
+				return data.User{}
+			}
+
+			if to, ok := redirectTo.(string); ok && to != "" {
 				ctx.Redirect(302, to)
 				ctx.Next()
 				return data.User{}
 			}
 		}
+
 		ctx.Redirect(302, "/")
 		ctx.Next()
 		return data.User{}
 	}
 
 	return user
+}
+
+func (o *Oauth) CreateOrGetUser(ctx *gin.Context, u goth.User) (*data.User, error) {
+	userId, err := strconv.ParseUint(u.UserID, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &data.User{
+		ID:    userId,
+		Email: u.Email,
+	}
+
+	// engine create.
+	engine := o.Web.Data.Engine
+	engine.Where(user).First(user)
+
+	user.Name = u.Name
+	user.Discriminator = u.RawData["discriminator"].(string)
+	user.SessionToken = u.AccessToken
+	user.SessionTokenSecret = u.AccessTokenSecret
+	user.RefreshToken = u.RefreshToken
+	user.Expiry = u.ExpiresAt
+
+	if user.CreatedAt.IsZero() {
+		return user, engine.Create(user).Error
+	} else {
+		return user, engine.Save(user).Error
+	}
+}
+
+func (o *Oauth) refreshToken(u goth.User) error {
+	if time.Now().After(u.ExpiresAt) {
+		token, err := discordProvider.RefreshToken(u.RefreshToken)
+		if err != nil {
+			return err
+		}
+
+		u.RefreshToken = token.RefreshToken
+		u.AccessToken = token.AccessToken
+		u.ExpiresAt = token.Expiry
+	}
+
+	return nil
+}
+
+func getAuthSessionFromSession(ctx *gin.Context) (goth.Session, error) {
+	sess := sessions.Default(ctx)
+	str, ok := sess.Get(SessionAuthKey).(string)
+	if !ok {
+		return nil, errors.New("invalid session auth data")
+	}
+	return discordProvider.UnmarshalSession(str)
+}
+
+func getAuthUserFromSession(ctx *gin.Context) (goth.User, error) {
+	oauthSess, err := getAuthSessionFromSession(ctx)
+	if err != nil {
+		return goth.User{}, err
+	}
+
+	return discordProvider.FetchUser(oauthSess)
 }

@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/SelfBotBot/selfbot/web/viewdata"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +25,13 @@ func (p *Pages) RegisterHandlers() error {
 	p.Web.Gin.GET("/tos", p.handleTos)
 
 	return nil
+}
+
+func (p *Pages) handlePanel(ctx *gin.Context) {
+	sess := sessions.Default(ctx)
+	v := viewdata.Default(ctx)
+	v.Set("Title", "Panel")
+	v.HTML(200, "pages/index.html")
 }
 
 func (p *Pages) handleIndex(ctx *gin.Context) {

@@ -43,19 +43,15 @@ func NewHandler(sqlConf config.MySQL) (*Handler, error) {
 }
 
 func (h *Handler) Sync() error {
-	//h.Engine.AutoMigrate(&Review{}, &Account{}, &User{}, &Bot{})
-	h.Engine.AutoMigrate(&User{})
-	//gob.Register(Review{})
-	//gob.Register(Account{})
+	h.Engine.AutoMigrate(&User{}, &Collection{}, &Track{})
 	gob.Register(User{})
-	//gob.Register(Bot{})
+	gob.Register(Track{})
+	gob.Register(Collection{})
 
-	//h.Engine.Model(&User{}).Related(&Review{}, "Reviews")
-	//h.Engine.Model(&User{}).Related(&Bot{}, "OwnedBots", "Invited")
-	//
-	//h.Engine.Model(&Bot{}).Related(&Review{}, "Reviews")
-	//h.Engine.Model(&Bot{}).Related(&Account{}, "Accounts")
-	//h.Engine.Model(&Bot{}).Related(&User{}, "Owners")
+	h.Engine.Model(&User{}).Related(&Collection{}, "Collections")
+
+	h.Engine.Model(&Collection{}).Related(&Track{}, "Tracks")
+	h.Engine.Model(&Track{}).Related(&Collection{}, "Collection")
 
 	return nil
 }

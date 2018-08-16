@@ -46,12 +46,18 @@ func New(config *config.Config) (ret *Panel, err error) {
 		Config: config,
 	}
 
-	f, err := os.Create("/var/log/selfbot/gin.log")
+	if f, err := os.Stat(config.Web.LogDirectory); os.IsNotExist(err) || !f.IsDir() {
+		if err := os.MkdirAll(config.Web.LogDirectory, 0644); err != nil {
+			return nil, err
+		}
+	}
+
+	f, err := os.Create(config.Web.LogDirectory + "/gin.log")
 	if err != nil {
 		return ret, err
 	}
 
-	errF, err := os.Create("/var/log/selfbot/gin_err.log")
+	errF, err := os.Create(config.Web.LogDirectory + "/gin_err.log")
 	if err != nil {
 		return ret, err
 	}

@@ -100,7 +100,7 @@ func (m *Middleware) setupSessions() (err error) {
 
 	store.Options(sessions.Options{
 		Secure:   true,
-		MaxAge:   int((48 + time.Hour).Seconds()),
+		MaxAge:   int(((24 + time.Hour) * 7).Seconds()),
 		HttpOnly: true,
 		Domain:   "sb.cory.red",
 	})

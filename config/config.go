@@ -109,6 +109,7 @@ type Web struct {
 	CSPReportWebHook string   `json:"csp_report_webhook"`
 	DomainNames      []string `json:"domain_names"`
 	AlexaAppID       string   `json:"alexa_app_id"`
+	LogDirectory     string   `json:"log_directory"`
 }
 
 // DefaultConfig the default configuration to save.
@@ -133,6 +134,7 @@ var DefaultConfig = Config{
 		Secret:   "secret",
 	},
 	Web: Web{
+		LogDirectory:     "/var/log/selfbot",
 		StaticFilePath:   "static/",
 		ListenAddress:    "",
 		LogAuthKey:       "memememememem",
