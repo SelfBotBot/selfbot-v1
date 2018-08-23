@@ -3,7 +3,6 @@ package alexa
 import (
 	"context"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/SelfBotBot/selfbot/data"
@@ -22,7 +21,7 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 		return skillserver.NewEchoResponse().OutputSpeech("Sorry, we have encountered an error... We can't get all the colours").EndSession(true)
 	}
 
-	key := strings.Replace("ALEXALINKING."+colourA+b+c+d+e, " ", "_", -1)
+	key := "ALEXALINKING." + colourA + "_" + b + "_" + c + "_" + d + "_" + e
 
 	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(time.Second*6))
 	redis, err := a.Web.Redis.GetContext(ctx)
@@ -36,7 +35,12 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 	}
 
 	redis.Close()
-	discordId := reply.(string)
+	discordId, ok := reply.(string)
+	if !ok {
+		return skillserver.NewEchoResponse().OutputSpeech("You need to generate linking keys to use this, go to s b dot cory dot red forward slash alexa link for more information.").EndSession(true)
+
+	}
+
 	userId, err := strconv.ParseUint(discordId, 10, 64)
 	if err != nil {
 		return skillserver.NewEchoResponse().OutputSpeech("We encountered an error processing your discord user ID.").EndSession(true)
