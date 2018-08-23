@@ -80,8 +80,8 @@ func (a *AlexaMeme) linkAccount(ctx *gin.Context) {
 		identWords += getRandom(SelfbotIdentificationWords) + " "
 	}
 
-	key := strings.Replace("ALEXA.LINKING:"+identWords, " ", "_", -1)
-	if err := redis.Send("SETEX", key, 600, user.ID); err != nil {
+	key := strings.Replace("ALEXA.LINKING:"+strings.TrimSpace(identWords), " ", "_", -1)
+	if _, err := redis.Do("SETEX", key, 600, user.ID); err != nil {
 		ctx.AbortWithError(500, err)
 		return
 	}
