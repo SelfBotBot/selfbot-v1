@@ -13,6 +13,7 @@ import (
 
 	"github.com/SelfBotBot/selfbot/web"
 
+	alexa2 "github.com/SelfBotBot/selfbot/alexa"
 	"github.com/SelfBotBot/selfbot/config"
 	"github.com/SelfBotBot/selfbot/discord"
 )
@@ -27,6 +28,9 @@ func main() {
 
 	panel, err := web.New(conf)
 	e(err)
+
+	alexa := &alexa2.AlexaMeme{Web: panel}
+	alexa.RegisterHandlers()
 
 	dbEngine, err := data.NewHandler(conf.MySQL)
 	e(err)
