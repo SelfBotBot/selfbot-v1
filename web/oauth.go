@@ -79,7 +79,7 @@ func (o *Oauth) handleLogin(ctx *gin.Context) {
 
 		u, err := getAuthUserFromSession(ctx)
 		if err == nil && o.refreshToken(u) == nil {
-			user, ok := o.GetUser(ctx)
+			user, ok := o.Web.GetUser(ctx)
 			if !ok {
 				ctx.Error(errors.New("man something bad happened here"))
 				return
@@ -246,15 +246,9 @@ func (o *Oauth) SaveUser(ctx *gin.Context, user *data.User) error {
 	return nil
 }
 
-func (o *Oauth) GetUser(ctx *gin.Context) (data.User, bool) {
-	sess := sessions.Default(ctx)
-	user, ok := sess.Get("user").(data.User)
-	return user, ok
-}
-
 func (o *Oauth) GetUserOrRedirect(ctx *gin.Context) data.User {
 	sess := sessions.Default(ctx)
-	user, ok := o.GetUser(ctx)
+	user, ok := o.Web.GetUser(ctx)
 	if !ok || user.Agreed {
 		if redirectTo := sess.Get(SessionRedirectKey); redirectTo != nil {
 			sess.Delete(SessionRedirectKey)

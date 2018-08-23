@@ -1,9 +1,13 @@
-package web
+package alexa
 
 import (
 	"math/rand"
 	"net/http"
 	"strings"
+
+	"github.com/SilverCory/EzVote/pkg/dep/sources/https---github.com-kataras-iris/core/errors"
+
+	"github.com/SelfBotBot/selfbot/web"
 
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
@@ -12,6 +16,10 @@ import (
 
 	alexa "github.com/mikeflynn/go-alexa/skillserver"
 )
+
+var SelfbotIdentificationWords = []string{
+	"RED", "GREEN", "BLUE", "GOLD", "PINK", "BLACK", "WHITE", "SILVER", "GREY", "BROWN",
+}
 
 var SelfbotDoneResponses = []string{
 	"Sure.",
@@ -25,9 +33,9 @@ var SelfbotDoneResponses = []string{
 }
 
 type AlexaMeme struct {
-	Web   *Panel
+	Web   *web.Panel
 	Party *gin.RouterGroup
-	Handler
+	web.Handler
 }
 
 // Alright what you're about to see here is pretty gross.. Sorry.
@@ -49,7 +57,37 @@ func (a *AlexaMeme) RegisterHandlers() error {
 		n.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 
+	a.Web.Gin.GET("/alexalink", a.linkAccount)
+
 	return nil
+}
+
+func (a *AlexaMeme) linkAccount(ctx *gin.Context) {
+	user, ok := a.Web.GetUser(ctx)
+	if !ok || user.CreatedAt.IsZero() {
+		ctx.AbortWithError(401, errors.New("unauthorised? please log in"))
+		return
+	}
+
+	redis, err := a.Web.Redis.GetContext(ctx)
+	if err != nil {
+		ctx.AbortWithError(500, err)
+		return
+	}
+
+	identWords := ""
+	for i := 0; i < 5; i++ {
+		identWords += getRandom(SelfbotIdentificationWords) + " "
+	}
+
+	key := strings.Replace("ALEXALINKING."+identWords, " ", "_", -1)
+	if err := redis.Send("SETEX", key, 600, user.ID); err != nil {
+		ctx.AbortWithError(500, err)
+		return
+	}
+
+	ctx.String(200, identWords)
+
 }
 
 func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
@@ -72,13 +110,14 @@ func (a *AlexaMeme) EchoSelfBot(w http.ResponseWriter, r *http.Request) {
 				soundName = a.transformName(slot.Value)
 			}
 
-			if a.Web.PlaySound != nil && a.Web.PlaySound("402871667891765248", soundName) {
+			if a.Web.PlaySound != nil && a.Web.PlaySound("217977786248331274", soundName) {
 				echoResp = alexa.NewEchoResponse().OutputSpeech(getRandom(SelfbotDoneResponses)).EndSession(false)
 			} else {
 				echoResp = alexa.NewEchoResponse().OutputSpeech("I'm sorry, I couldn't find the sound " + soundName + ", try again?").EndSession(false)
 			}
 			break
-
+		case "LinkAccount":
+			echoResp = a.LinkAccount(echoReq)
 		case "CancelIntent":
 			echoResp = alexa.NewEchoResponse().OutputSpeech("Cya").EndSession(true)
 			break

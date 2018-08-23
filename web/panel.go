@@ -86,9 +86,6 @@ func New(config *config.Config) (ret *Panel, err error) {
 	oauth := Oauth{Web: ret}
 	oauth.RegisterHandlers()
 
-	alexaMeme := &AlexaMeme{Web: ret}
-	alexaMeme.RegisterHandlers()
-
 	pages := &Pages{Web: ret}
 	pages.RegisterHandlers()
 
@@ -109,6 +106,12 @@ func (panel *Panel) RunAutoTLS() error {
 	}
 	go http.ListenAndServe(panel.Config.Web.ListenAddress+":80", m.HTTPHandler(nil))
 	return runWithManager(panel.Gin, *m, panel.Config.Web.ListenAddress)
+}
+
+func (panel *Panel) GetUser(ctx *gin.Context) (data.User, bool) {
+	sess := sessions.Default(ctx)
+	user, ok := sess.Get("user").(data.User)
+	return user, ok
 }
 
 func runWithManager(r http.Handler, m autocert.Manager, address string) error {

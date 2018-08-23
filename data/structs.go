@@ -9,6 +9,7 @@ type User struct {
 	Name          string
 	Discriminator string
 	Email         string `gorm:"type:varchar(254);unique_index"`
+	AlexaID       string `gorm:"type:varchar(254);unique_index"`
 	Token         string
 	RefreshToken  string
 	Expiry        time.Time

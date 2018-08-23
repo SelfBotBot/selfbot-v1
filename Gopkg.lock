@@ -170,7 +170,6 @@
   name = "github.com/mikeflynn/go-alexa"
   packages = ["skillserver"]
   revision = "0bc78f5644f296c15d196876aa70e5259ac0aedb"
-  source = "github.com/danielcondemarin/go-alexa"
 
 [[projects]]
   branch = "master"
@@ -184,8 +183,6 @@
     "cpu",
     "host",
     "internal/common",
-    "mem",
-    "net",
     "process"
   ]
   revision = "8048a2e9c5773235122027dd585cf821b2af1249"
@@ -291,6 +288,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1b556c2b0e1b5a7213fc3b4d9673e1998aac6eeabd7750a5f46fe2bf37a78b13"
+  inputs-digest = "7958c5f05b84ed2df5773a105a0bfe7d3173d5eacd272e2173d4f7c06a8cc553"
   solver-name = "gps-cdcl"
   solver-version = 1

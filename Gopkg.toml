@@ -40,7 +40,6 @@
 [[constraint]]
   branch = "master"
   name = "github.com/mikeflynn/go-alexa"
-  source = "github.com/danielcondemarin/go-alexa"
 
 [[constraint]]
   branch = "master"
