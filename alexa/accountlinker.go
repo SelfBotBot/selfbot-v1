@@ -2,6 +2,7 @@ package alexa
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -12,16 +13,25 @@ import (
 
 func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.EchoResponse {
 
+	var latestErr error
+
+	// This is aids, please excuse this...
 	colourA, err := getSlotID(echoReq, "COLOUR_A")
+	setErrorIfPreviousIsNil(latestErr, err)
 	b, err := getSlotID(echoReq, "COLOUR_B")
+	setErrorIfPreviousIsNil(latestErr, err)
 	c, err := getSlotID(echoReq, "COLOUR_C")
+	setErrorIfPreviousIsNil(latestErr, err)
 	d, err := getSlotID(echoReq, "COLOUR_D")
+	setErrorIfPreviousIsNil(latestErr, err)
 	e, err := getSlotID(echoReq, "COLOUR_E")
+	setErrorIfPreviousIsNil(latestErr, err)
 	if err != nil {
 		return skillserver.NewEchoResponse().OutputSpeech("Sorry, we have encountered an error... We can't get all the colours").EndSession(true)
 	}
 
-	key := "ALEXALINKING." + colourA + "_" + b + "_" + c + "_" + d + "_" + e
+	key := "ALEXA.LINKING:" + colourA + "_" + b + "_" + c + "_" + d + "_" + e
+	fmt.Println("KEY is ", key)
 
 	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(time.Second*6))
 	redis, err := a.Web.Redis.GetContext(ctx)
@@ -35,13 +45,13 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 	}
 
 	redis.Close()
-	discordId, ok := reply.(string)
+	fmt.Printf("%#v\n", reply)
+	discordId, ok := reply.([]byte)
 	if !ok {
 		return skillserver.NewEchoResponse().OutputSpeech("You need to generate linking keys to use this, go to s b dot cory dot red forward slash alexa link for more information.").EndSession(true)
-
 	}
 
-	userId, err := strconv.ParseUint(discordId, 10, 64)
+	userId, err := strconv.ParseUint(string(discordId), 10, 64)
 	if err != nil {
 		return skillserver.NewEchoResponse().OutputSpeech("We encountered an error processing your discord user ID.").EndSession(true)
 	}
@@ -63,6 +73,14 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 
 	return skillserver.NewEchoResponse().OutputSpeech("Ohh yes honey, this should be done. Please log out and log back in on the website.").EndSession(true)
 
+}
+
+func setErrorIfPreviousIsNil(previousError, newError error) error {
+	if previousError == nil {
+		return newError
+	}
+
+	return previousError
 }
 
 func getSlotID(request *skillserver.EchoRequest, name string) (string, error) {
