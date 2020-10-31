@@ -16,7 +16,7 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 	var latestErr error
 
 	// This is aids, please excuse this...
-	colourA, err := getSlotID(echoReq, "COLOUR_A")
+	a, err := getSlotID(echoReq, "COLOUR_A")
 	setErrorIfPreviousIsNil(latestErr, err)
 	b, err := getSlotID(echoReq, "COLOUR_B")
 	setErrorIfPreviousIsNil(latestErr, err)
@@ -30,7 +30,7 @@ func (a *AlexaMeme) LinkAccount(echoReq *skillserver.EchoRequest) *skillserver.E
 		return skillserver.NewEchoResponse().OutputSpeech("Sorry, we have encountered an error... We can't get all the colours").EndSession(true)
 	}
 
-	key := "ALEXA.LINKING:" + colourA + "_" + b + "_" + c + "_" + d + "_" + e
+	key := fmt.Sprintf("ALEXA.LINKING:%s_%s_%s_%s_%s", a, b, c, d, e)
 	fmt.Println("KEY is ", key)
 
 	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(time.Second*6))
